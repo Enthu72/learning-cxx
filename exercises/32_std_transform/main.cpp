@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
     // TODO: 调用 `std::transform`，将 `v` 中的每个元素乘以 2，并转换为字符串，存入 `ans`
     // std::vector<std::string> ans
     std::vector<std::string> ans(val.size());
-    std::transform(val.begin(), val.end(), ans.begin(), To_string);
+    std::transform(val.begin(),val.end(),ans.begin(),To_string);
     ASSERT(ans.size() == val.size(), "ans size should be equal to val size");
     ASSERT(ans[0] == "16", "ans[0] should be 16");
     ASSERT(ans[1] == "26", "ans[1] should be 26");
