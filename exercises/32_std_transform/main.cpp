@@ -5,6 +5,22 @@
 
 // READ: `std::transform` <https://zh.cppreference.com/w/cpp/algorithm/transform>
 // READ: `std::vector::begin` <https://zh.cppreference.com/w/cpp/container/vector/begin>
+std::string To_string(int i) {
+    if (i == 0) {
+        return "0";
+    }
+    i = i*2;
+    
+    std::string str = "";
+    while (i != 0) {
+        str += (i % 10 + '0');  // Convert digit to character
+        i /= 10;
+    }
+    
+    // Reverse the string to get the correct number order
+    std::reverse(str.begin(), str.end());
+    return str;
+}
 
 int main(int argc, char **argv) {
     std::vector<int> val{8, 13, 21, 34, 55};
