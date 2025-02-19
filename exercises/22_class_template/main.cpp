@@ -10,6 +10,10 @@ struct Tensor4D {
     Tensor4D(unsigned int const shape_[4], T const *data_) {
         unsigned int size = 1;
         // TODO: 填入正确的 shape 并计算 size
+        for (int i = 0; i < 4; ++i) {
+            size *= shape_[i];   // 计算四个维度的乘积，得到总元素数
+            shape[i] = shape_[i];// 将输入的 shape 复制到成员变量 shape 中
+        }
         data = new T[size];
         std::memcpy(data, data_, size * sizeof(T));
     }
@@ -28,6 +32,32 @@ struct Tensor4D {
     // 则 `this` 与 `others` 相加时，3 个形状为 `[1, 2, 1, 4]` 的子张量各自与 `others` 对应项相加。
     Tensor4D &operator+=(Tensor4D const &others) {
         // TODO: 实现单向广播的加法
+
+        unsigned int stride[4] = {1, 1, 1, 1};
+        unsigned int other_stride[4] = {1, 1, 1, 1};
+        for (unsigned int i = 1; i < 3; i++) {
+            for (unsigned int j = i + 1; j < 4; j++) {
+                stride[i] *= shape[j];
+                other_stride[i] *= others.shape[j];
+            }
+        }
+
+        unsigned int df[] = {1, 1, 1, 1};
+        for (unsigned int i = 0; i < 4; i++) {
+            df[i] = shape[i] - others.shape[i] ? 0 : 1;
+        }
+
+
+        for (unsigned int i = 0; i < shape[1]; i++) {
+            for (unsigned int j = 0; j < shape[2]; j++) {
+                for (unsigned int k = 0; k < shape[3]; k++) {
+                    // 一维索引 转 张量四维索引
+                    unsigned int currI = i * stride[1] + j * stride[2] + k * stride[3];
+                    unsigned int otherI = i * df[1] * other_stride[1] + j * df[2] * other_stride[2] + k * df[3] * other_stride[3];
+                    data[currI] += others.data[otherI];
+                }
+            }
+        }
         return *this;
     }
 };
